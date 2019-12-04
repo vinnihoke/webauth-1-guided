@@ -21,10 +21,13 @@ router.post('/register', (req, res) => {
 router.post('/login', (req, res) => {
   let { username, password } = req.body;
 
+
+
   Users.findBy({ username })
     .first()
     .then(user => {
-      if (user) {
+      // We want to check the password pulled from the req.body. However, we need to compare it somehow. To do that we'll use the bcrypt.compareSync method. This method takes two arguments... First is the password the user is attempting to enter, and second is the user password we have stored in the server.
+      if (user && bcrypt.compareSync(password, user.password)) {
         res.status(200).json({ message: `Welcome ${user.username}!` });
       } else {
         res.status(401).json({ message: 'Invalid Credentials' });
