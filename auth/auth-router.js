@@ -1,9 +1,13 @@
+const bcrypt = require('bcryptjs');
 const router = require('express').Router();
-
 const Users = require('../users/users-model.js');
 
 router.post('/register', (req, res) => {
   let user = req.body;
+
+  // Use bcrypt to create a hash, then assign 'user.password' to 'hash'.
+  const hash = bcrypt.hashSync(user.password, 12);
+  user.password = hash;
 
   Users.add(user)
     .then(saved => {
